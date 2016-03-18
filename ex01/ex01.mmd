@@ -6,13 +6,26 @@ Use *Newton downhill iteration*, *post acceleration* and *Aitken iteration* meth
 \\[f(x) = \frac{x^3}{3} - x = 0\\]
 and compare their performances (speed and error)
 
-Used algorithm
+Used function and algorithm
 ---
 1. Newton downhill iteration
+\\[
+x_{k+1} = x_k - \lambda \frac{f(x_k)}{f'(x_k)}
+\\\lambda = [0,1]
+\\]
 ![Newton downhill](./Newton_downhill.png)
 2. Post acceleration
+\\[
+x_{k+1} = \frac{1}{1- \mathrm{L}}(g(x_k) - L x_k)\\
+\mathrm{L} = g'(x_k)
+\\]
 ![Post acceleration](./Post_acceleration.png)
 3. Aitken iteration
+\\[
+a_{k+1} = g(x_k)\\
+b_{k+1} = g(a_{k+1})\\
+x_{k+1} = b_{k+1} - \frac{(b_{k+1}-a_{k+1})^2}{b_{k+1}-2a_{k+1}+x_k}
+\\]
 ![Aitken iteration](./Aitken_accceleration.png)
 
 Source Code
