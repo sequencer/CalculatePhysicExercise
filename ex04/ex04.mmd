@@ -1,0 +1,93 @@
+# Homework Chapter 04
+##Integral,刘玖阳,应用物理1301,U201310209
+Question
+---
+use *repeated Simpson quadrature* and *repeated trapezoid quarature* Write a program to compute the integral 
+\\[
+I(f) = \int_1^5 \sin(x)\mathrm{d}x,\ h = 0.1
+\\]
+Used function and algorithm.
+---
+1. Simpson integrals
+\\[s = \frac{h}{2}(f(0)+2\sum_{i=1}^{n-1}f(x_i)+f(n) \\]
+![Simpson_integral](./Simpson_integral.png)
+2. Trapezoid integrals
+\\[s = \frac{h}{3}(f(0)+4\sum_{i=1,i=2k}^{n-1}f(x_i) + 2\sum_{i=1,i=2k+1}^{n-1}f(x_i)+f(n))\\]
+![Trapezoid](./Trapezoid_integral.png)
+Source Code
+---
+```
+module integrals
+contains
+function func(x)
+    implicit none
+    real*8::x,func
+    func = sin(x)
+end function func
+    
+function simpsonIntegral(xmin,xmax,N)
+    implicit none
+    real*8::xmin,xmax,dx,simpsonIntegral
+    integer::N,i
+    real*8::X(N+1),Y(N+1)
+    dx = (xmax-xmin)/N
+    do i=1,N+1
+        X(i) = xmin+dx*(i-1)
+        Y(i) = func(X(i))
+    enddo
+    simpsonIntegral = Y(1)+Y(N+1)
+    do i=2,N-1
+        if (mod(i,2) .eq. 0) then
+            simpsonIntegral = simpsonIntegral+4 *func(X(i))
+        else
+            simpsonIntegral = simpsonIntegral+2*func(X(i))
+        endif
+    enddo
+    simpsonIntegral = simpsonIntegral*dx/3
+end function simpsonIntegral
+
+function trapezoidIntegral(xmin,xmax,N)
+    implicit none
+    real*8::xmin,xmax,dx,trapezoidIntegral
+    integer::N,i
+    real*8::X(N+1),Y(N+1)
+    dx = (xmax-xmin)/N
+    do i=1,N+1
+        X(i) = xmin+dx*(i-1)
+        Y(i) = func(X(i))
+    enddo
+    trapezoidIntegral = Y(1)+Y(N+1)
+    do i=2,N-1
+        trapezoidIntegral = trapezoidIntegral + 2*func(X(i))
+    enddo
+    trapezoidIntegral = trapezoidIntegral*dx/2
+
+end function trapezoidIntegral
+
+end module integrals
+program main
+    use integrals
+    implicit none
+    real*8::xmin,xmax,s
+    integer::N
+    xmin = 1
+    xmax = 5
+    N = 40
+    s = trapezoidIntegral(xmin,xmax,N)
+    write(*,*) s
+end program main
+```
+
+Running Screenshot
+---
+1. Simpson Interpolation
+![Simpson_integral](./Simpson_integral_run.png)
+2. Trapezoid Interpolation
+![Trapezoid_integral](./Trapezoid_integral_run.png)
+
+
+Error analytics
+---
+![error](./error.png)
+The N is sample number,use \\(\log{error}\\) to illustrate error, as we can see: Trapezoid has a stable trend to go down, and the Simpson varies from the N, the error is much smaller,when N is even.
+> The origin data has upload to [Github](https://github.com/sequencer/CalculatePhysicExercise)
